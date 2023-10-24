@@ -23,19 +23,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
     handleConnection(client: Socket) {
         ChatGateway.logger.log(`${client.id}(${client.handshake.query["username"]}) is connected!`);
-
-        this.server.emit(ChatMethods.ReceiveMessage, {
-            name: `admin`,
-            text: `join chat.`,
-        });
     }
 
     handleDisconnect(client: Socket) {
         ChatGateway.logger.log(`${client.id} is disconnected...`);
     }
 
+    @SubscribeMessage(ChatMethods.Connect)
+    handleConnect(client: Socket, { chatRoomId, name }: { chatRoomId: string; name: string }) {
+        console.log(`${client.id} is joined to ${chatRoomId}`);
+        client.join(chatRoomId);
+        this.server.to(chatRoomId).emit(ChatMethods.ReceiveMessage, {
+            name: "System",
+            text: `Hurray! ${name} has been arrived.`,
+        });
+    }
+
     @SubscribeMessage(ChatMethods.SendMessage)
-    handleMessage(_: Socket, payload: { name: string; text: string }) {
-        this.server.emit(ChatMethods.ReceiveMessage, payload);
+    handleMessage(_: Socket, { name, text, chatRoomId }: { name: string; text: string; chatRoomId: string }) {
+        this.server.to(chatRoomId).emit(ChatMethods.ReceiveMessage, { name, text });
     }
 }
