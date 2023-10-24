@@ -1,5 +1,5 @@
 {
-    "words": ["marshallku"],
+    "words": ["marshallku", "websockets"],
     "ignorePaths": [
         "pnpm-lock.yaml",
         "package.json",

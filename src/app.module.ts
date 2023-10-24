@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import Joi from "joi";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { ChatModule } from "./chat/chat.module";
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { AppService } from "./app.service";
                 REDIS_HOST: Joi.string().required(),
             }),
         }),
+        ChatModule,
     ],
     controllers: [AppController],
     providers: [AppService],
