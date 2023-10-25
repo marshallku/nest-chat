@@ -10,6 +10,21 @@ import {
 import { Server, Socket } from "socket.io";
 import { ChatMethods } from "#constants";
 
+interface Message {
+    /** 사용자 socket id */
+    clientId: string;
+    /** 사용자 이름 */
+    name: string;
+    /** 메시지 내용 */
+    text: string;
+    /** 채팅방 ID */
+    chatRoomId: string;
+    /** 메시지 전송 날자 (ISO String) */
+    createdAt: string;
+    /** 임의 데이터 전송용 */
+    customData?: string;
+}
+
 @WebSocketGateway({ namespace: "chat" })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
     private static readonly logger = new Logger(ChatGateway.name);
@@ -30,7 +45,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     }
 
     @SubscribeMessage(ChatMethods.Connect)
-    handleConnect(client: Socket, { chatRoomId, name }: { chatRoomId: string; name: string }) {
+    handleConnect(client: Socket, { chatRoomId, name }: Pick<Message, "chatRoomId" | "name">) {
         console.log(`${client.id} is joined to ${chatRoomId}`);
         client.join(chatRoomId);
         this.server.to(chatRoomId).emit(ChatMethods.ReceiveMessage, {
@@ -40,7 +55,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     }
 
     @SubscribeMessage(ChatMethods.SendMessage)
-    handleMessage(_: Socket, { name, text, chatRoomId }: { name: string; text: string; chatRoomId: string }) {
-        this.server.to(chatRoomId).emit(ChatMethods.ReceiveMessage, { name, text });
+    handleMessage(client: Socket, message: Message) {
+        const messageToSend: Message = { clientId: client.id, ...message, createdAt: new Date().toISOString() };
+        this.server.to(message.chatRoomId).emit(ChatMethods.ReceiveMessage, messageToSend);
     }
 }
