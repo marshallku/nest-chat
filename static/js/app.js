@@ -1,10 +1,10 @@
-const socket = io("http://localhost:3443/chat");
+const socket = io(`${window.location.origin}/chat`);
 const app = document.getElementById("app");
 const chatList = document.createElement("ul");
 const chatForm = document.createElement("form");
 const chatInput = document.createElement("input");
 const userName = prompt("Name?") || "Anonymous";
-// HACK: The uri must be like `http://localhost:3443/chat/?chatId=123`
+// HACK: The uri must be like `$ORIGIN/chat/?chatId=123`
 const chatRoomId = location.search.slice(1).split("=").pop() || "PUBLIC";
 
 socket.on("ReceiveMessage", (message) => {
