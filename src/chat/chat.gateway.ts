@@ -46,7 +46,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
     @SubscribeMessage(ChatMethods.Connect)
     handleConnect(client: Socket, { chatRoomId, name }: Pick<Message, "chatRoomId" | "name">) {
-        console.log(`${client.id} is joined to ${chatRoomId}`);
+        ChatGateway.logger.log(`${client.id} is joined to ${chatRoomId}`);
         client.join(chatRoomId);
         this.server.to(chatRoomId).emit(ChatMethods.ReceiveMessage, {
             name: "System",
