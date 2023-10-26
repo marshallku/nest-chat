@@ -6,12 +6,22 @@ services:
         restart: always
         container_name: chat-redis
         ports:
-            - 48379:6379
+            - ${REDIS_PORT}:6379
+        networks:
+            net:
     api:
+        restart: unless-stopped
         build:
-            context: ./
+            context: .
             dockerfile: Dockerfile
         depends_on:
             - redis
         ports:
-            - 48334:3443
+            - 48334:${NODE_PORT}
+        environment:
+            - REDIS_HOST=host.docker.internal
+        networks:
+            net:
+
+networks:
+    net:
