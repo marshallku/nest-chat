@@ -12,11 +12,13 @@ import { UsersModule } from "./users/users.module";
 @Module({
     imports: [
         ConfigModule.forRoot({
+            isGlobal: true,
             envFilePath: `.env`,
             validationSchema: Joi.object({
                 NODE_PORT: Joi.string().required(),
                 REDIS_PORT: Joi.string().required(),
                 REDIS_HOST: Joi.string().required(),
+                JWT_SECRET: Joi.string().required(),
             }),
         }),
         ServeStaticModule.forRoot({
