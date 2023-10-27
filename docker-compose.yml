@@ -9,6 +9,17 @@ services:
             - ${REDIS_PORT}:6379
         networks:
             net:
+    mongo:
+        image: mongo
+        restart: always
+        container_name: chat-mongo
+        ports:
+            - ${MONGO_PORT}:27017
+        networks:
+            net:
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     api:
         restart: unless-stopped
         container_name: chat-api
@@ -21,6 +32,7 @@ services:
             - 48334:${NODE_PORT}
         environment:
             - REDIS_HOST=host.docker.internal
+            - MONGO_HOST=host.docker.internal
         networks:
             net:
 
