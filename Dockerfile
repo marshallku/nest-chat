@@ -15,4 +15,6 @@ COPY . .
 
 EXPOSE 3443
 
+RUN pnpm build
+
 CMD ["pnpm", "start:prod"]

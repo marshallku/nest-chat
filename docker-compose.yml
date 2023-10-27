@@ -11,6 +11,7 @@ services:
             net:
     api:
         restart: unless-stopped
+        container_name: chat-api
         build:
             context: .
             dockerfile: Dockerfile
