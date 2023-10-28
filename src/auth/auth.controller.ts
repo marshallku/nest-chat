@@ -3,7 +3,7 @@ import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { Public } from "./auth.guard";
 import { SignInRequest, SignInResponse } from "./auth.dto";
-import { User } from "#users/users.schema";
+import { User } from "#user/user.schema";
 
 @Controller("auth")
 @ApiTags("Auth API")

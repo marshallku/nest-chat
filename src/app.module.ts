@@ -7,7 +7,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ChatModule } from "./chat/chat.module";
 import { AuthModule } from "./auth/auth.module";
-import { UsersModule } from "./users/users.module";
+import { UserModule } from "./user/user.module";
 import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
@@ -34,7 +34,7 @@ import { MongooseModule } from "@nestjs/mongoose";
         }),
         ChatModule,
         AuthModule,
-        UsersModule,
+        UserModule,
     ],
     controllers: [AppController],
     providers: [AppService],
