@@ -2,13 +2,14 @@ import { resolve } from "path";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { MongooseModule } from "@nestjs/mongoose";
 import * as Joi from "joi";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ChatModule } from "./chat/chat.module";
 import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
-import { MongooseModule } from "@nestjs/mongoose";
+import { RoomModule } from "./room/room.module";
 
 @Module({
     imports: [
@@ -35,6 +36,7 @@ import { MongooseModule } from "@nestjs/mongoose";
         ChatModule,
         AuthModule,
         UserModule,
+        RoomModule,
     ],
     controllers: [AppController],
     providers: [AppService],
