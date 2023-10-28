@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "#user/user.service";
+import { comparePassword, createHashedPassword } from "#utils";
 
 @Injectable()
 export class AuthService {
@@ -12,12 +13,17 @@ export class AuthService {
     async signIn(name: string, password: string) {
         const user = await this.userService.findOne(name);
 
-        // FIXME: Must not use plain text
-        if (!user || user?.password !== password) {
+        if (!user) {
             throw new UnauthorizedException();
         }
 
-        const payload = { sub: user.id, username: user.name };
+        const samePassword = await comparePassword(password, user.password);
+
+        if (!samePassword) {
+            throw new UnauthorizedException();
+        }
+
+        const payload = { sub: user._id, username: user.name };
         const token = await this.jwtService.signAsync(payload);
 
         return { token };
@@ -37,7 +43,9 @@ export class AuthService {
             });
         }
 
-        const user = await this.userService.create({ name, password });
+        const hashedPassword = await createHashedPassword(password);
+        const user = await this.userService.create({ name, password: hashedPassword });
+
         return user.toJSON();
     }
 }
