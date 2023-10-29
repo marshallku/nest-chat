@@ -1,9 +1,9 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
-import { Public } from "./auth.guard";
 import { SignInRequest, SignInResponse } from "./auth.dto";
 import { User } from "#user/user.schema";
+import { Public } from "#utils";
 
 @Controller("auth")
 @ApiTags("Auth API")
