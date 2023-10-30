@@ -90,11 +90,15 @@ function renderLoginPage() {
 function renderChatApp() {
     resetApp();
 
-    const socket = io(`${window.location.origin}/chat`);
+    const socket = io(`${window.location.origin}/chat`, { auth: { token: user.token } });
     const chatList = document.createElement("ul");
     const chatForm = document.createElement("form");
     const chatInput = document.createElement("input");
     const { name: userName } = user;
+
+    socket.on("Error", (message) => {
+        console.log(message);
+    });
 
     socket.on("ReceiveMessage", (message) => {
         console.log(message);

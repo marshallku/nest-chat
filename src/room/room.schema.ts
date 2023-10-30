@@ -1,4 +1,4 @@
-import { HydratedDocument, Types } from "mongoose";
+import { Document, HydratedDocument, Types } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ChatUserRole } from "#constants/lib/user";
 
@@ -18,7 +18,7 @@ export const RoomUserSchema = SchemaFactory.createForClass(RoomUser);
 export type RoomDocument = HydratedDocument<Room>;
 
 @Schema({ timestamps: true })
-export class Room {
+export class Room extends Document {
     @Prop({ required: true })
     name: string;
 

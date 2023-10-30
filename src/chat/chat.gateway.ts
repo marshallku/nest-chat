@@ -1,3 +1,4 @@
+import { Server, Socket } from "socket.io";
 import { Logger } from "@nestjs/common";
 import {
     OnGatewayConnection,
@@ -7,8 +8,9 @@ import {
     WebSocketGateway,
     WebSocketServer,
 } from "@nestjs/websockets";
-import { Server, Socket } from "socket.io";
+import { JwtService } from "@nestjs/jwt";
 import { ChatMethods } from "#constants";
+import { RoomService } from "#room/room.service";
 
 interface Message {
     /** 사용자 socket id */
@@ -27,6 +29,10 @@ interface Message {
 
 @WebSocketGateway({ namespace: "chat" })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
+    constructor(
+        private jwtService: JwtService,
+        private roomService: RoomService,
+    ) {}
     private static readonly logger = new Logger(ChatGateway.name);
 
     @WebSocketServer()
@@ -45,7 +51,43 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     }
 
     @SubscribeMessage(ChatMethods.Connect)
-    handleConnect(client: Socket, { chatRoomId, name }: Pick<Message, "chatRoomId" | "name">) {
+    async handleConnect(client: Socket, { chatRoomId, name }: Pick<Message, "chatRoomId" | "name">) {
+        const { token } = client.handshake.auth;
+
+        if (!token) {
+            client.emit(ChatMethods.Error, {
+                message: "Invalid token",
+            });
+            return;
+        }
+
+        const { sub: userId } = await this.jwtService.verifyAsync(token, {
+            secret: process.env.JWT_SECRET,
+        });
+
+        if (!userId) {
+            client.emit(ChatMethods.Error, {
+                message: "Invalid token",
+            });
+            return;
+        }
+
+        const targetRoom = await this.roomService.findOne(chatRoomId);
+
+        if (targetRoom == null) {
+            client.emit(ChatMethods.Error, {
+                message: "Room doesn't exist",
+            });
+            return;
+        }
+
+        if (!targetRoom.users.find(({ user }) => user === userId)) {
+            client.emit(ChatMethods.Error, {
+                message: "You are not allowed to join this room",
+            });
+            return;
+        }
+
         ChatGateway.logger.log(`${client.id} is joined to ${chatRoomId}`);
         client.join(chatRoomId);
         this.server.to(chatRoomId).emit(ChatMethods.ReceiveMessage, {

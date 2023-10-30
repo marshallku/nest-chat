@@ -22,4 +22,8 @@ export class RoomService {
 
         return createdRoom.toJSON();
     }
+
+    async findOne(id: string): Promise<Room | undefined> {
+        return this.roomModel.findById(id).exec();
+    }
 }
