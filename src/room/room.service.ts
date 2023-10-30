@@ -18,8 +18,8 @@ export class RoomService {
         const admin = { user: adminUser, role: ChatUserRole.Admin };
         // TODO: Validate user id
         const chatUsers = users.map((user) => ({ user, role: ChatUserRole.Participant }));
-        const createdRoom = new this.roomModel({ users: [admin, ...chatUsers], name });
+        const createdRoom = await new this.roomModel({ users: [admin, ...chatUsers], name }).save();
 
-        return createdRoom;
+        return createdRoom.toJSON();
     }
 }
