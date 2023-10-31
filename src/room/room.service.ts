@@ -2,7 +2,7 @@ import { Model } from "mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Room } from "./room.schema";
-import { ChatUserRole } from "#constants/lib/user";
+import { ChatUserRole, MONGO_CONNECTION_NAME } from "#constants";
 
 export interface CreateRoomOptions {
     adminUser: string;
@@ -12,7 +12,7 @@ export interface CreateRoomOptions {
 
 @Injectable()
 export class RoomService {
-    constructor(@InjectModel(Room.name) private roomModel: Model<Room>) {}
+    constructor(@InjectModel(Room.name, MONGO_CONNECTION_NAME) private roomModel: Model<Room>) {}
 
     async createRoom({ adminUser, users, name }: CreateRoomOptions) {
         const admin = { user: adminUser, role: ChatUserRole.Admin };

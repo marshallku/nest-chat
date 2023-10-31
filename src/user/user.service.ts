@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { User } from "./user.schema";
 import { Model } from "mongoose";
+import { User } from "./user.schema";
+import { MONGO_CONNECTION_NAME } from "#constants";
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+    constructor(@InjectModel(User.name, MONGO_CONNECTION_NAME) private userModel: Model<User>) {}
 
     async create(createUserDto: Pick<User, "name" | "password">) {
         const createdUser = new this.userModel(createUserDto);

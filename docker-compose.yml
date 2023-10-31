@@ -20,6 +20,18 @@ services:
         environment:
             - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    # Temporarily save chat data in mongodb
+    chat-data:
+        image: mongo
+        restart: always
+        container_name: chat-data-mongo
+        ports:
+            - ${CHAT_DATA_PORT}:27017
+        networks:
+            net:
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     api:
         restart: unless-stopped
         container_name: chat-api

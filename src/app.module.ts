@@ -10,6 +10,7 @@ import { ChatModule } from "./chat/chat.module";
 import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import { RoomModule } from "./room/room.module";
+import { CHAT_DATA_CONNECTION_NAME, MONGO_CONNECTION_NAME } from "#constants";
 
 @Module({
     imports: [
@@ -25,10 +26,20 @@ import { RoomModule } from "./room/room.module";
                 MONGO_HOST: Joi.string().required(),
                 MONGO_USERNAME: Joi.string().required(),
                 MONGO_PASSWORD: Joi.string().required(),
+                CHAT_DATA_PORT: Joi.string().required(),
             }),
         }),
         MongooseModule.forRoot(
             `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/`,
+            {
+                connectionName: MONGO_CONNECTION_NAME,
+            },
+        ),
+        MongooseModule.forRoot(
+            `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.CHAT_DATA_PORT}/`,
+            {
+                connectionName: CHAT_DATA_CONNECTION_NAME,
+            },
         ),
         ServeStaticModule.forRoot({
             rootPath: resolve("./static"),
