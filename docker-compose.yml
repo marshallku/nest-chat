@@ -35,6 +35,12 @@ services:
             - MONGO_HOST=172.18.0.1
         networks:
             net:
+    scylla:
+        image: scylladb/scylla
+        restart: unless-stopped
+        container_name: chat-scylla-node1
+        networks:
+            - net
 
 networks:
     net:
