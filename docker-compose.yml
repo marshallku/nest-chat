@@ -31,8 +31,8 @@ services:
         ports:
             - 48334:${NODE_PORT}
         environment:
-            - REDIS_HOST=host.docker.internal
-            - MONGO_HOST=host.docker.internal
+            - REDIS_HOST=172.18.0.1
+            - MONGO_HOST=172.18.0.1
         networks:
             net:
 
