@@ -96,17 +96,23 @@ function renderChatApp() {
     const chatInput = document.createElement("input");
     const { name: userName } = user;
 
-    socket.on("Error", (message) => {
-        console.log(message);
-    });
-
-    socket.on("ReceiveMessage", (message) => {
+    const appendMessage = (message) => {
         console.log(message);
         const li = document.createElement("li");
 
         li.innerText = `${message.name}: ${message.text}`;
 
         chatList.append(li);
+    };
+
+    socket.on("Error", (message) => {
+        console.log(message);
+    });
+
+    socket.on("ReceiveMessage", appendMessage);
+
+    socket.on("FetchMessages", (messages) => {
+        messages.forEach(appendMessage);
     });
 
     socket.emit("Connect", {

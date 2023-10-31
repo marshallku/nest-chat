@@ -3,6 +3,7 @@ export const enum ChatMethods {
     Error = "Error",
     ReceiveMessage = "ReceiveMessage",
     SendMessage = "SendMessage",
+    FetchMessages = "FetchMessages",
 }
 
 export const enum ChatType {

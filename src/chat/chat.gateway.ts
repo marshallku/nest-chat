@@ -102,6 +102,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
             text: `Hurray! ${name} has been arrived.`,
         });
         client.join(chatRoomId);
+        const chatData = await this.chatService.getRoomData(chatRoomId);
+        client.emit(ChatMethods.FetchMessages, chatData.data);
     }
 
     @SubscribeMessage(ChatMethods.SendMessage)
