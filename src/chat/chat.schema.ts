@@ -13,7 +13,7 @@ export class Chat {
     chatRoomId: string;
 
     @Prop({ default: ChatType.Message })
-    type: ChatType;
+    type?: ChatType;
 
     @Prop({ required: true })
     name: string;
@@ -22,10 +22,23 @@ export class Chat {
     text: string;
 
     @Prop({ default: new Date().toISOString() })
-    createdAt: string;
+    createdAt?: string;
 
     @Prop()
     customData?: string;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);
+
+export type ChatRoomDocument = HydratedDocument<ChatRoom>;
+
+@Schema()
+export class ChatRoom {
+    @Prop({ type: Types.ObjectId, ref: "Room", required: true })
+    chatRoomId: string;
+
+    @Prop({ required: true })
+    data: Chat[];
+}
+
+export const ChatRoomSchema = SchemaFactory.createForClass(ChatRoom);

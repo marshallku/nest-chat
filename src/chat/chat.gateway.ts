@@ -9,6 +9,7 @@ import {
     WebSocketServer,
 } from "@nestjs/websockets";
 import { JwtService } from "@nestjs/jwt";
+import { ChatService } from "./chat.service";
 import { ChatMethods } from "#constants";
 import { RoomService } from "#room/room.service";
 
@@ -32,6 +33,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     constructor(
         private jwtService: JwtService,
         private roomService: RoomService,
+        private chatService: ChatService,
     ) {}
     private static readonly logger = new Logger(ChatGateway.name);
 
@@ -89,16 +91,51 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         }
 
         ChatGateway.logger.log(`${client.id} is joined to ${chatRoomId}`);
-        client.join(chatRoomId);
+        client.data = {
+            userId,
+            name,
+            token,
+        };
+
         this.server.to(chatRoomId).emit(ChatMethods.ReceiveMessage, {
             name: "System",
             text: `Hurray! ${name} has been arrived.`,
         });
+        client.join(chatRoomId);
     }
 
     @SubscribeMessage(ChatMethods.SendMessage)
     handleMessage(client: Socket, message: Message) {
-        const messageToSend: Message = { clientId: client.id, ...message, createdAt: new Date().toISOString() };
+        if (!client.data || typeof client.data !== "object") {
+            client.emit(ChatMethods.Error, {
+                message: "Invalid request",
+            });
+            return;
+        }
+
+        const { token, userId, name } = client.data;
+
+        if (!token || !userId || !name) {
+            client.emit(ChatMethods.Error, {
+                message: "Invalid request",
+            });
+            return;
+        }
+
+        const createdAt = new Date().toISOString();
+        const messageToSend: Message = {
+            clientId: client.id,
+            ...message,
+            createdAt,
+        };
+
         this.server.to(message.chatRoomId).emit(ChatMethods.ReceiveMessage, messageToSend);
+        this.chatService.saveChatData({
+            userId,
+            chatRoomId: message.chatRoomId,
+            name,
+            text: message.text,
+            createdAt,
+        });
     }
 }
