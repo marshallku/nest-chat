@@ -23,8 +23,14 @@ export class RoomService {
         return createdRoom.toJSON();
     }
 
-    async findOne(id: string): Promise<Room | undefined> {
+    findOne(id: string) {
         return this.roomModel.findById(id).exec();
+    }
+
+    findByUserId(id: string) {
+        console.log(`"${id}"`);
+        return this.roomModel.find({ "users.user": "654104f2cb92bcf41a0d7978" }).exec();
+        // return this.roomModel.aggregate([{ $match: { users: { $in: [new Types.ObjectId(id)] } } }]).exec();
     }
 
     async addUsers(chatRoomId: string, userIds: string[]) {
