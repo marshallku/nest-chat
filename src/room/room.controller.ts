@@ -1,8 +1,9 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UnauthorizedException } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ChatUserRole } from "#constants";
+import { TokenPayload } from "#auth/auth.service";
 import { RoomService } from "./room.service";
 import { AddUserRequest, CreateRoomRequest } from "./room.dto";
-import { ChatUserRole } from "#constants";
 
 @Controller("room")
 @ApiTags("Chat room API")
@@ -12,7 +13,7 @@ export class RoomController {
     @HttpCode(HttpStatus.OK)
     @Post("create")
     @ApiOperation({ summary: "Create Room" })
-    createRoom(@Request() req: { user: { sub: string } }, @Body() createRoomDto: CreateRoomRequest) {
+    createRoom(@Request() req: { user: TokenPayload }, @Body() createRoomDto: CreateRoomRequest) {
         if (!req.user || !req.user.sub) {
             throw new UnauthorizedException();
         }
@@ -23,7 +24,7 @@ export class RoomController {
     @HttpCode(HttpStatus.OK)
     @Get("list")
     @ApiOperation({ summary: "Get chat rooms of user" })
-    async getRooms(@Request() req: { user: { sub: string } }) {
+    async getRooms(@Request() req: { user: TokenPayload }) {
         if (!req.user || !req.user.sub) {
             throw new UnauthorizedException();
         }
@@ -34,7 +35,7 @@ export class RoomController {
     @HttpCode(HttpStatus.NO_CONTENT)
     @Post("add-user")
     @ApiOperation({ summary: "Add users to room" })
-    async addUser(@Request() req: { user: { sub: string } }, @Body() { chatRoomId, users }: AddUserRequest) {
+    async addUser(@Request() req: { user: TokenPayload }, @Body() { chatRoomId, users }: AddUserRequest) {
         if (!req.user || !req.user.sub) {
             throw new UnauthorizedException();
         }

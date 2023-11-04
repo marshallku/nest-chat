@@ -3,6 +3,13 @@ import { JwtService } from "@nestjs/jwt";
 import { UserService } from "#user/user.service";
 import { comparePassword, createHashedPassword } from "#utils";
 
+export interface TokenPayload {
+    /** User ID */
+    sub: string;
+    /** User name */
+    username: string;
+}
+
 @Injectable()
 export class AuthService {
     constructor(
@@ -23,7 +30,7 @@ export class AuthService {
             throw new UnauthorizedException();
         }
 
-        const payload = { sub: user._id, username: user.name };
+        const payload: TokenPayload = { sub: user._id, username: user.name };
         const token = await this.jwtService.signAsync(payload);
 
         return { token };
