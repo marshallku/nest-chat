@@ -1,7 +1,8 @@
 import { NestFactory } from "@nestjs/core";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
-import { AppModule } from "./app.module";
+import * as cookieParser from "cookie-parser";
 import { RedisIoAdapter } from "#chat/chat.adapter";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -14,6 +15,8 @@ async function bootstrap() {
     await redisIOAdapter.connectToRedis();
 
     app.useWebSocketAdapter(redisIOAdapter);
+
+    app.use(cookieParser());
 
     await app.listen(process.env.NODE_PORT);
 }
