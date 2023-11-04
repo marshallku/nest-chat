@@ -17,6 +17,13 @@ export class AuthService {
         private jwtService: JwtService,
     ) {}
 
+    async generateToken(id: string, name: string) {
+        const payload: TokenPayload = { sub: id, username: name };
+        const token = await this.jwtService.signAsync(payload);
+
+        return token;
+    }
+
     async signIn(name: string, password: string) {
         const user = await this.userService.findOne(name);
 
@@ -30,10 +37,9 @@ export class AuthService {
             throw new UnauthorizedException();
         }
 
-        const payload: TokenPayload = { sub: user._id, username: user.name };
-        const token = await this.jwtService.signAsync(payload);
+        const token = await this.generateToken(user._id, user.name);
 
-        return { token };
+        return { user: user.toJSON(), token };
     }
 
     async signUp(name: string, password: string) {
@@ -52,7 +58,8 @@ export class AuthService {
 
         const hashedPassword = await createHashedPassword(password);
         const user = await this.userService.create({ name, password: hashedPassword });
+        const token = await this.generateToken(user._id, user.name);
 
-        return user.toJSON();
+        return { user: user.toJSON(), token };
     }
 }

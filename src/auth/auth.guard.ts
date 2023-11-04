@@ -2,7 +2,7 @@ import { Request } from "express";
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
-import { IS_PUBLIC_KEY } from "#constants";
+import { IS_PUBLIC_KEY, TOKEN_COOKIE_KEY } from "#constants";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate {
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {
-        const [type, token] = request.headers.authorization?.split(" ") ?? [];
-        return type === "Bearer" ? token : undefined;
+        const token = request.cookies[TOKEN_COOKIE_KEY];
+        return typeof token === "string" ? token : undefined;
     }
 }

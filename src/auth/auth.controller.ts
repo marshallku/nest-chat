@@ -1,9 +1,11 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Response } from "express";
+import { User } from "#user/user.schema";
+import { TOKEN_COOKIE_KEY } from "#constants";
+import { Public } from "#utils";
 import { AuthService } from "./auth.service";
 import { SignInRequest, SignInResponse } from "./auth.dto";
-import { User } from "#user/user.schema";
-import { Public } from "#utils";
 
 @Controller("auth")
 @ApiTags("Auth API")
@@ -15,8 +17,11 @@ export class AuthController {
     @Post("login")
     @ApiOperation({ summary: "Login" })
     @ApiCreatedResponse({ type: SignInResponse })
-    signIn(@Body() signInDto: SignInRequest): Promise<SignInResponse> {
-        return this.authService.signIn(signInDto.name, signInDto.password);
+    async signIn(@Res({ passthrough: true }) response: Response, @Body() signInDto: SignInRequest) {
+        const { token, user } = await this.authService.signIn(signInDto.name, signInDto.password);
+        // FIXME: Add security options
+        response.cookie(TOKEN_COOKIE_KEY, token);
+        return user;
     }
 
     @Public()
@@ -24,14 +29,17 @@ export class AuthController {
     @Post("signup")
     @ApiOperation({ summary: "Sign Up" })
     @ApiCreatedResponse({ type: User })
-    signUp(@Body() signUpDto: Pick<User, "name" | "password">) {
-        return this.authService.signUp(signUpDto.name, signUpDto.password);
+    async signUp(@Res({ passthrough: true }) response: Response, @Body() signUpDto: Pick<User, "name" | "password">) {
+        const { token, user } = await this.authService.signUp(signUpDto.name, signUpDto.password);
+        // FIXME: Add security options
+        response.cookie(TOKEN_COOKIE_KEY, token);
+        return user;
     }
 
     @Get("profile")
     @ApiOperation({ summary: "Get profile of user" })
     @ApiCreatedResponse({ type: User })
-    getProfile(@Request() req: { user: User }) {
+    getProfile(@Req() req: { user: User }) {
         return req.user;
     }
 }
