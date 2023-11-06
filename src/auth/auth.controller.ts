@@ -19,8 +19,11 @@ export class AuthController {
     @ApiCreatedResponse({ type: SignInResponse })
     async signIn(@Res({ passthrough: true }) response: Response, @Body() signInDto: SignInRequest) {
         const { token, user } = await this.authService.signIn(signInDto.name, signInDto.password);
-        // FIXME: Add security options
-        response.cookie(TOKEN_COOKIE_KEY, token);
+        response.cookie(TOKEN_COOKIE_KEY, token, {
+            path: "/",
+            secure: true,
+            sameSite: "none",
+        });
         return user;
     }
 
@@ -31,8 +34,11 @@ export class AuthController {
     @ApiCreatedResponse({ type: User })
     async signUp(@Res({ passthrough: true }) response: Response, @Body() signUpDto: Pick<User, "name" | "password">) {
         const { token, user } = await this.authService.signUp(signUpDto.name, signUpDto.password);
-        // FIXME: Add security options
-        response.cookie(TOKEN_COOKIE_KEY, token);
+        response.cookie(TOKEN_COOKIE_KEY, token, {
+            path: "/",
+            secure: true,
+            sameSite: "none",
+        });
         return user;
     }
 
