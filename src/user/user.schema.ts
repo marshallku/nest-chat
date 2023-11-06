@@ -14,6 +14,9 @@ export class User extends Document<string> {
 
     @Prop({ default: UserRole.User })
     role: UserRole;
+
+    @Prop({ unique: true, sparse: true })
+    publicId: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
