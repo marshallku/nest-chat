@@ -28,7 +28,7 @@ interface Message {
     customData?: string;
 }
 
-@WebSocketGateway({ namespace: "chat" })
+@WebSocketGateway({ namespace: "chat", cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
     constructor(
         private jwtService: JwtService,
