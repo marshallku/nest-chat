@@ -8,12 +8,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: {
             credentials: true,
-            origin: [
-                "http://localhost:3000",
-                "http://localhost:3443",
-                "https://chat.marshallku.dev",
-                "https://marshallku.dev:48030",
-            ],
+            origin: process.env.CORS_ORIGINS?.split(","),
         },
     });
 
