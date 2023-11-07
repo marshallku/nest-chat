@@ -29,8 +29,7 @@ export class RoomService {
 
     findByUserId(id: string) {
         console.log(`"${id}"`);
-        return this.roomModel.find({ "users.user": "654104f2cb92bcf41a0d7978" }).exec();
-        // return this.roomModel.aggregate([{ $match: { users: { $in: [new Types.ObjectId(id)] } } }]).exec();
+        return this.roomModel.find({ "users.user": id }).exec();
     }
 
     async addUsers(chatRoomId: string, userIds: string[]) {
