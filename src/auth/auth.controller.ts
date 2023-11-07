@@ -23,6 +23,9 @@ export class AuthController {
             path: "/",
             secure: true,
             sameSite: "none",
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            domain: "marshallku.dev",
         });
         return user;
     }
@@ -38,6 +41,9 @@ export class AuthController {
             path: "/",
             secure: true,
             sameSite: "none",
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            domain: "marshallku.dev",
         });
         return user;
     }
