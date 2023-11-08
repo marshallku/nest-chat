@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { FilterQuery, Model } from "mongoose";
 import { User } from "./user.schema";
 import { MONGO_CONNECTION_NAME } from "#constants";
 
@@ -15,6 +15,10 @@ export class UserService {
 
     async findOne(name: string): Promise<User | undefined> {
         return this.userModel.findOne({ name }).exec();
+    }
+
+    async findOneBy(query: FilterQuery<User>): Promise<User | undefined> {
+        return this.userModel.findOne(query).exec();
     }
 
     async findAll(): Promise<User[]> {
