@@ -48,10 +48,10 @@ export class AuthController {
         return user;
     }
 
-    @Get("profile")
-    @ApiOperation({ summary: "Get profile of user" })
+    @Get("status")
+    @ApiOperation({ summary: "Get user from token" })
     @ApiCreatedResponse({ type: User })
-    getProfile(@Req() req: { user: User }) {
+    getAuthStatus(@Req() req: { user: User }) {
         return req.user;
     }
 }
