@@ -9,7 +9,7 @@ export class ChatService {
     constructor(@InjectModel(ChatRoom.name, CHAT_DATA_CONNECTION_NAME) private chatRoomModel: Model<ChatRoom>) {}
 
     async getRoomData(chatRoomId: string) {
-        return await this.chatRoomModel.findOne({ chatRoomId }, { data: { $slice: [0, 100] } }).exec();
+        return await this.chatRoomModel.findOne({ chatRoomId }, { data: { $slice: -100 } }).exec();
     }
 
     async saveChatData(chat: Chat) {
