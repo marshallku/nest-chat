@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, HydratedDocument } from "mongoose";
+import { Document, HydratedDocument, Types } from "mongoose";
 import { UserRole } from "#constants/lib/user";
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
-export class User extends Document<string> {
+export class User extends Document {
     @Prop({ required: true })
     name: string;
 
@@ -17,6 +17,9 @@ export class User extends Document<string> {
 
     @Prop({ unique: true, sparse: true })
     publicId: string;
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: "User" }] })
+    friends: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
