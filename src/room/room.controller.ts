@@ -14,10 +14,6 @@ export class RoomController {
     @Post("create")
     @ApiOperation({ summary: "Create Room" })
     createRoom(@Request() req: { user: TokenPayload }, @Body() createRoomDto: CreateRoomRequest) {
-        if (!req.user || !req.user.sub) {
-            throw new UnauthorizedException();
-        }
-
         return this.roomService.createRoom({ adminUser: req.user.sub, ...createRoomDto });
     }
 
@@ -25,10 +21,6 @@ export class RoomController {
     @Get("list")
     @ApiOperation({ summary: "Get chat rooms of user" })
     async getRooms(@Request() req: { user: TokenPayload }) {
-        if (!req.user || !req.user.sub) {
-            throw new UnauthorizedException();
-        }
-
         return this.roomService.findByUserId(req.user.sub);
     }
 
@@ -36,10 +28,6 @@ export class RoomController {
     @Post("add-user")
     @ApiOperation({ summary: "Add users to room" })
     async addUser(@Request() req: { user: TokenPayload }, @Body() { chatRoomId, users }: AddUserRequest) {
-        if (!req.user || !req.user.sub) {
-            throw new UnauthorizedException();
-        }
-
         const room = await this.roomService.findOne(chatRoomId);
         const currentUserInRoom = room.users.find(({ user }) => user.toString() === req.user.sub);
 

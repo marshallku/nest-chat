@@ -22,10 +22,7 @@ export class UserController {
     @HttpCode(HttpStatus.OK)
     @Get("list")
     @ApiOperation({ summary: "Get all users" })
-    async getAllUsers(@Req() req: { user: TokenPayload }) {
-        if (!req.user || !req.user.sub) {
-            throw new UnauthorizedException();
-        }
+    async getAllUsers() {
         const user = await this.userService.findAll();
 
         return user;
@@ -35,10 +32,6 @@ export class UserController {
     @Post("add-public-id")
     @ApiOperation({ summary: "Add public id to user" })
     async addPublicId(@Req() req: { user: TokenPayload }, @Body() { publicId }: AddPublicIdRequest) {
-        if (!req.user || !req.user.sub) {
-            throw new UnauthorizedException();
-        }
-
         const userWithPublicId = await this.userService.findOneBy({ publicId });
 
         if (userWithPublicId) {

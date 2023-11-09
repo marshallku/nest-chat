@@ -3,8 +3,10 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { MongooseModule } from "@nestjs/mongoose";
+import { JwtModule } from "@nestjs/jwt";
 import * as Joi from "joi";
 import { CHAT_DATA_CONNECTION_NAME, MONGO_CONNECTION_NAME } from "#constants";
+import { AuthGuard } from "#auth/auth.guard";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ChatModule } from "./chat/chat.module";
@@ -12,6 +14,7 @@ import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import { RoomModule } from "./room/room.module";
 import { FriendsModule } from "./friends/friends.module";
+import { APP_GUARD } from "@nestjs/core";
 
 @Module({
     imports: [
@@ -50,8 +53,15 @@ import { FriendsModule } from "./friends/friends.module";
         UserModule,
         RoomModule,
         FriendsModule,
+        JwtModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            provide: APP_GUARD,
+            useClass: AuthGuard,
+        },
+    ],
 })
 export class AppModule {}
