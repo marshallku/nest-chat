@@ -13,7 +13,6 @@ export class FriendsController {
     @Post("add")
     @ApiOperation({ summary: "Add friend with public id of a user" })
     async addFriend(@Request() req: { user: TokenPayload }, @Body() { userId }: AddFriendRequest) {
-        console.log(userId);
         await this.friendsService.addFriendToUser(req.user.sub, userId);
     }
 

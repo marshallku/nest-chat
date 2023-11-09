@@ -28,7 +28,6 @@ export class RoomService {
     }
 
     findByUserId(id: string) {
-        console.log(`"${id}"`);
         return this.roomModel.find({ "users.user": id }).exec();
     }
 
