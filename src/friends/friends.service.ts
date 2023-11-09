@@ -14,7 +14,10 @@ export class FriendsService {
         }
 
         user.friends.push(friend._id);
-        console.log(user.friends);
         await user.save();
+    }
+
+    findFriendsOfUser(userId: string) {
+        return this.userService.findFriends(userId);
     }
 }

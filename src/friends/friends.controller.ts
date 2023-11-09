@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Request } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { TokenPayload } from "#auth/auth.service";
 import { FriendsService } from "./friends.service";
@@ -15,5 +15,12 @@ export class FriendsController {
     async addFriend(@Request() req: { user: TokenPayload }, @Body() { userId }: AddFriendRequest) {
         console.log(userId);
         await this.friendsService.addFriendToUser(req.user.sub, userId);
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Get("list")
+    @ApiOperation({ summary: "Add friend with public id of a user" })
+    async getFriends(@Request() req: { user: TokenPayload }) {
+        return await this.friendsService.findFriendsOfUser(req.user.sub);
     }
 }

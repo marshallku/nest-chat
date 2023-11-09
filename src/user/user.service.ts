@@ -24,4 +24,11 @@ export class UserService {
     async findAll(): Promise<User[]> {
         return this.userModel.find({}, { password: 0 }).exec();
     }
+
+    async findFriends(id: string) {
+        const user = await this.userModel
+            .findOne({ _id: id })
+            .populate({ path: "friends", select: "-password -friends" });
+        return user.friends;
+    }
 }
