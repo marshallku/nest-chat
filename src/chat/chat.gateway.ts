@@ -105,7 +105,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     }
 
     @SubscribeMessage(ChatMethods.SendMessage)
-    handleMessage(client: Socket, message: Message) {
+    async handleMessage(client: Socket, message: Message) {
         if (!client.data || typeof client.data !== "object") {
             this.sendErrorToClient(client, "Invalid request");
             return;
@@ -125,13 +125,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
             createdAt,
         };
 
-        this.server.to(message.chatRoomId).emit(ChatMethods.ReceiveMessage, messageToSend);
-        this.chatService.saveChatData({
+        await this.chatService.saveChatData({
             userId,
             chatRoomId: message.chatRoomId,
             name,
             text: message.text,
             createdAt,
         });
+
+        this.server.to(message.chatRoomId).emit(ChatMethods.ReceiveMessage, messageToSend);
     }
 }

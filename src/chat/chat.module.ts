@@ -4,7 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule } from "@nestjs/config";
 import { ChatGateway } from "./chat.gateway";
 import { ChatService } from "./chat.service";
-import { ChatRoom, ChatRoomSchema } from "./chat.schema";
+import { Chat, ChatRoom, ChatRoomSchema, ChatSchema } from "./chat.schema";
 import { CHAT_DATA_CONNECTION_NAME } from "#constants";
 import { RoomModule } from "#room/room.module";
 
@@ -23,7 +23,13 @@ import { RoomModule } from "#room/room.module";
                 };
             },
         }),
-        MongooseModule.forFeature([{ name: ChatRoom.name, schema: ChatRoomSchema }], CHAT_DATA_CONNECTION_NAME),
+        MongooseModule.forFeature(
+            [
+                { name: ChatRoom.name, schema: ChatRoomSchema },
+                { name: Chat.name, schema: ChatSchema },
+            ],
+            CHAT_DATA_CONNECTION_NAME,
+        ),
     ],
 })
 export class ChatModule {}
