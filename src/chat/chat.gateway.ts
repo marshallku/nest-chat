@@ -9,9 +9,9 @@ import {
     WebSocketServer,
 } from "@nestjs/websockets";
 import { JwtService } from "@nestjs/jwt";
-import { ChatService } from "./chat.service";
 import { ChatMethods } from "#constants";
 import { RoomService } from "#room/room.service";
+import { ChatService } from "./chat.service";
 
 interface Message {
     /** 사용자 socket id */
@@ -52,14 +52,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         ChatGateway.logger.log(`${client.id} is disconnected...`);
     }
 
+    private sendErrorToClient(client: Socket, message = "Something went wrong.") {
+        client.emit(ChatMethods.Error, {
+            message,
+        });
+    }
+
     @SubscribeMessage(ChatMethods.Connect)
     async handleConnect(client: Socket, { chatRoomId, name }: Pick<Message, "chatRoomId" | "name">) {
         const { token } = client.handshake.auth;
 
         if (!token) {
-            client.emit(ChatMethods.Error, {
-                message: "Invalid token",
-            });
+            this.sendErrorToClient(client, "Invalid token");
             return;
         }
 
@@ -68,25 +72,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         });
 
         if (!userId) {
-            client.emit(ChatMethods.Error, {
-                message: "Invalid token",
-            });
+            this.sendErrorToClient(client, "Invalid token");
             return;
         }
 
         const targetRoom = await this.roomService.findOne(chatRoomId);
 
         if (targetRoom == null) {
-            client.emit(ChatMethods.Error, {
-                message: "Room doesn't exist",
-            });
+            this.sendErrorToClient(client, "Room doesn't exist");
             return;
         }
 
         if (!targetRoom.users.find(({ user }) => user === userId)) {
-            client.emit(ChatMethods.Error, {
-                message: "You are not allowed to join this room",
-            });
+            this.sendErrorToClient(client, "You are not allowed to join this room");
             return;
         }
 
@@ -109,18 +107,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     @SubscribeMessage(ChatMethods.SendMessage)
     handleMessage(client: Socket, message: Message) {
         if (!client.data || typeof client.data !== "object") {
-            client.emit(ChatMethods.Error, {
-                message: "Invalid request",
-            });
+            this.sendErrorToClient(client, "Invalid request");
             return;
         }
 
         const { token, userId, name } = client.data;
 
         if (!token || !userId || !name) {
-            client.emit(ChatMethods.Error, {
-                message: "Invalid request",
-            });
+            this.sendErrorToClient(client, "Invalid request");
             return;
         }
 
