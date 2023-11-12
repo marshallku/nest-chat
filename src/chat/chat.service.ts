@@ -2,14 +2,14 @@ import { Model } from "mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Chat, ChatRoom } from "./chat.schema";
-import { CHAT_DATA_CONNECTION_NAME } from "#constants";
+import { CHAT_DATA_CONNECTION_NAME, CHAT_DATA_LIMIT } from "#constants";
 
 @Injectable()
 export class ChatService {
     constructor(@InjectModel(ChatRoom.name, CHAT_DATA_CONNECTION_NAME) private chatRoomModel: Model<ChatRoom>) {}
 
     async getRoomData(chatRoomId: string) {
-        return await this.chatRoomModel.findOne({ chatRoomId }, { data: { $slice: -100 } }).exec();
+        return await this.chatRoomModel.findOne({ chatRoomId }, { data: { $slice: -CHAT_DATA_LIMIT } }).exec();
     }
 
     async saveChatData(chat: Chat) {
