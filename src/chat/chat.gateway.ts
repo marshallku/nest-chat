@@ -135,4 +135,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
         this.server.to(message.chatRoomId).emit(ChatMethods.ReceiveMessage, messageToSend);
     }
+
+    @SubscribeMessage(ChatMethods.GetPreviousMessages)
+    async handleGetPreviousMessages(client: Socket, { chatRoomId, chatId }: { chatRoomId: string; chatId: string }) {
+        if (!client.data || typeof client.data !== "object") {
+            this.sendErrorToClient(client, "Invalid request");
+            return;
+        }
+
+        const { token, userId, name } = client.data;
+
+        if (!token || !userId || !name) {
+            this.sendErrorToClient(client, "Invalid request");
+            return;
+        }
+
+        const previousChatData = await this.chatService.getPreviousChatData(chatRoomId, chatId);
+
+        client.emit(ChatMethods.GetPreviousMessages, previousChatData.data);
+    }
 }

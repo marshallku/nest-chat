@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Chat, ChatRoom } from "./chat.schema";
@@ -15,6 +15,17 @@ export class ChatService {
         return await this.chatRoomModel
             .findOne({ chatRoomId }, { data: { $slice: -CHAT_DATA_LIMIT } })
             .populate({ path: "data" })
+            .exec();
+    }
+
+    async getPreviousChatData(chatRoomId: string, chatId: string) {
+        return await this.chatRoomModel
+            .findOne({ chatRoomId })
+            .populate({
+                path: "data",
+                match: { _id: { $lt: new Types.ObjectId(chatId) } },
+                options: { limit: CHAT_DATA_LIMIT },
+            })
             .exec();
     }
 

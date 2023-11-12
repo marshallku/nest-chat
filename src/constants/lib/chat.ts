@@ -4,6 +4,7 @@ export const enum ChatMethods {
     ReceiveMessage = "ReceiveMessage",
     SendMessage = "SendMessage",
     FetchMessages = "FetchMessages",
+    GetPreviousMessages = "GetPreviousMessages",
 }
 
 export const enum ChatType {
