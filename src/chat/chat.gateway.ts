@@ -151,6 +151,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
         const previousChatData = await this.chatService.getPreviousChatData(chatRoomId, chatId);
 
-        client.emit(ChatMethods.GetPreviousMessages, previousChatData.data);
+        client.emit(ChatMethods.GetPreviousMessages, previousChatData);
     }
 }

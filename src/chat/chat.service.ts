@@ -19,14 +19,16 @@ export class ChatService {
     }
 
     async getPreviousChatData(chatRoomId: string, chatId: string) {
-        return await this.chatRoomModel
+        const { data } = await this.chatRoomModel
             .findOne({ chatRoomId })
             .populate({
                 path: "data",
                 match: { _id: { $lt: new Types.ObjectId(chatId) } },
-                options: { limit: CHAT_DATA_LIMIT },
+                options: { sort: { _id: -1 }, limit: CHAT_DATA_LIMIT },
             })
             .exec();
+
+        return data.reverse();
     }
 
     async saveChatData(chatData: Chat) {
