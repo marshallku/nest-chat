@@ -119,19 +119,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         }
 
         const createdAt = new Date().toISOString();
-        const messageToSend: Message = {
-            clientId: client.id,
-            ...message,
-            createdAt,
-        };
-
-        await this.chatService.saveChatData({
+        const chat = await this.chatService.saveChatData({
             userId,
             chatRoomId: message.chatRoomId,
             name,
             text: message.text,
             createdAt,
         });
+
+        const messageToSend: Message = {
+            ...chat.toJSON(),
+            clientId: client.id,
+        };
 
         this.server.to(message.chatRoomId).emit(ChatMethods.ReceiveMessage, messageToSend);
     }

@@ -42,9 +42,11 @@ export class ChatService {
             });
 
             await newChatRoom.save();
-            return;
+            return chat;
         }
 
         await this.chatRoomModel.findOneAndUpdate({ chatRoomId: chatData.chatRoomId }, { $push: { data: chat._id } });
+
+        return chat;
     }
 }
