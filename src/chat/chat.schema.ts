@@ -4,7 +4,7 @@ import { ChatType } from "#constants";
 
 export type ChatDocument = HydratedDocument<Chat>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Chat {
     @Prop({ type: Types.ObjectId, ref: "User", required: true })
     userId: Types.ObjectId;
@@ -37,8 +37,8 @@ export class ChatRoom {
     @Prop({ type: Types.ObjectId, ref: "Room", required: true })
     chatRoomId: string;
 
-    @Prop({ required: true })
-    data: Chat[];
+    @Prop({ required: true, type: [{ type: Types.ObjectId, ref: "Chat" }] })
+    data: Types.ObjectId[];
 }
 
 export const ChatRoomSchema = SchemaFactory.createForClass(ChatRoom);
