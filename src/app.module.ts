@@ -1,7 +1,5 @@
-import { resolve } from "path";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { ServeStaticModule } from "@nestjs/serve-static";
 import { MongooseModule } from "@nestjs/mongoose";
 import { JwtModule } from "@nestjs/jwt";
 import * as Joi from "joi";
@@ -45,9 +43,6 @@ import { APP_GUARD } from "@nestjs/core";
                 connectionName: CHAT_DATA_CONNECTION_NAME,
             },
         ),
-        ServeStaticModule.forRoot({
-            rootPath: resolve("./static"),
-        }),
         ChatModule,
         AuthModule,
         UserModule,
