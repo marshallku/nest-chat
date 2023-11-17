@@ -1,22 +1,39 @@
 # Nest.js chat api
 
-Sample chat api with [Nest.js](https://nestjs.com/)
+<img src="https://cdn.discordapp.com/attachments/1102888096007196733/1175118136136179732/talk.marshallku.dev_iPhone_12_Pro.png" height="300" />
 
-## Running application
+Sample chat api with [Nest.js](https://nestjs.com/).\
+You can see Front-end application at [ui-playground repository](https://github.com/marshallku/ui-playground/tree/master/apps/chat).
 
-It uses [pnpm](https://pnpm.io/) as package manager.
+## Running the application
 
-```text
-NODE_PORT=3443
-REDIS_PORT=48379
-REDIS_HOST=localhost
-```
+### Requirements
 
-Add information about ports and hosts at `.env`
+- [Docker](https://www.docker.com/): Tested in 24.0.7
+- [Docker Compose](https://docs.docker.com/compose/install/): Tested in 1.29.2
+- [Node.js](https://nodejs.org/en/): Tested in 20.9.0
+- [PNPM](https://pnpm.io/): Tested in 8.10.2
+
+### Environment variables
+
+- `CORS_ORIGINS`: Domains allowed for Cross-Origin Resource Sharing (CORS). Separate each with a comma (,).
+- `NODE_PORT`: Port on which to run the NestJS application.
+- `REDIS_PORT`: Port on which to run Redis.
+- `REDIS_HOST`: Host of Redis (set to 172.18.0.1 with Docker Compose).
+- `MONGO_PORT`: Port of MongoDB (used to save user and room data, referred to as Mongo1 below).
+- `MONGO_HOST`: Host of MongoDB (set to 172.18.0.1 with Docker Compose).
+- `MONGO_USERNAME`: Username for MongoDB.
+- `MONGO_PASSWORD`: Password for MongoDB.
+- `MONGO_CONNECTION_NAME`: Connection name for Mongo1.
+- `CHAT_DATA_PORT`: Port of MongoDB (used to save chat data, referred to as Mongo2 below).
+- `CHAT_DATA_CONNECTION_NAME`: Connection name for Mongo2.
+- `JWT_SECRET`: JWT secret key.
+
+### Running with docker
 
 ```bash
-pnpm start:dev
+docker network create net
+docker-compose up --build -d
 ```
 
-Then start the server and access [`localhost:3443/chat?chatId=1`](http://localhost:3443/chat?chatId=1) to chat.\
-**Please** note that you should include the chat room ID in the query string, regardless of the key.
+Simply run the command above and then access `localhost:$NODE_PORT` in your browser.
