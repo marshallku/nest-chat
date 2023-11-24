@@ -1,5 +1,10 @@
 {
-    "words": ["marshallku", "nestjs", "websockets"],
+    "words": [
+        "keyspace",
+        "marshallku",
+        "nestjs",
+        "websockets"
+    ],
     "ignorePaths": [
         "pnpm-lock.yaml",
         "package.json",

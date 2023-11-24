@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
+import { APP_GUARD } from "@nestjs/core";
 import { JwtModule } from "@nestjs/jwt";
 import * as Joi from "joi";
 import { CHAT_DATA_CONNECTION_NAME, MONGO_CONNECTION_NAME } from "#constants";
@@ -12,7 +13,7 @@ import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import { RoomModule } from "./room/room.module";
 import { FriendsModule } from "./friends/friends.module";
-import { APP_GUARD } from "@nestjs/core";
+import { CassandraModule } from "./cassandra/cassandra.module";
 
 @Module({
     imports: [
@@ -49,6 +50,7 @@ import { APP_GUARD } from "@nestjs/core";
         RoomModule,
         FriendsModule,
         JwtModule,
+        CassandraModule,
     ],
     controllers: [AppController],
     providers: [
