@@ -13,7 +13,6 @@ import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import { RoomModule } from "./room/room.module";
 import { FriendsModule } from "./friends/friends.module";
-import { CassandraModule } from "./cassandra/cassandra.module";
 
 @Module({
     imports: [
@@ -50,7 +49,6 @@ import { CassandraModule } from "./cassandra/cassandra.module";
         RoomModule,
         FriendsModule,
         JwtModule,
-        CassandraModule,
     ],
     controllers: [AppController],
     providers: [

@@ -45,6 +45,7 @@ services:
         environment:
             - REDIS_HOST=172.18.0.1
             - MONGO_HOST=172.18.0.1
+            - SCYLLA_HOST=172.18.0.1
         networks:
             net:
     scylla:
