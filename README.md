@@ -1,6 +1,6 @@
 # Nest.js chat api
 
-<img src="https://cdn.discordapp.com/attachments/1102888096007196733/1175118136136179732/talk.marshallku.dev_iPhone_12_Pro.png" height="300" />
+<img src="https://github.com/marshall-ku/assets/assets/72745119/daa01f10-697e-4e05-9f8c-cd3261ca3f99" height="300" />
 
 Sample chat api with [Nest.js](https://nestjs.com/).\
 You can see Front-end application at [ui-playground repository](https://github.com/marshallku/ui-playground/tree/master/apps/chat).
